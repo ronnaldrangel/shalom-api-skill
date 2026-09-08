@@ -109,6 +109,29 @@ Request (JSON):
 }
 ```
 
+Respuesta (ejemplo):
+```json
+{
+  "results": [
+    {
+      "orderNumber": "66479331",
+      "orderCode": "3KTH",
+      "status": "IN_TRANSIT",
+      "estados": [
+        { "estado": "REGISTRADO", "fecha": "2026-08-30 09:12" },
+        { "estado": "EN RUTA", "fecha": "2026-08-31 22:40" }
+      ]
+    },
+    {
+      "orderNumber": "66479332",
+      "orderCode": "9ABC",
+      "status": "UNKNOWN",
+      "error": "Guía no encontrada"
+    }
+  ]
+}
+```
+
 #### `GET /track/voucher`
 
 Genera el comprobante del envío como imagen PNG o PDF listo para adjuntar en el correo de confirmación.
@@ -122,6 +145,13 @@ curl "https://api.shalom-api.lat/track/voucher" \
   -H "x-api-key: TU_API_KEY"
 ```
 
+Respuesta (ejemplo):
+```json
+Content-Type: image/png
+
+<binario PNG — descarga directa con fetch/axios o incrusta con <img src>>
+```
+
 #### `GET /track/label`
 
 Etiqueta de rotulación en PDF para imprimir y pegar en el paquete. Requiere el ose_id que devuelve el rastreo.
@@ -132,6 +162,13 @@ Etiqueta de rotulación en PDF para imprimir y pegar en el paquete. Requiere el 
 ```bash
 curl "https://api.shalom-api.lat/track/label" \
   -H "x-api-key: TU_API_KEY"
+```
+
+Respuesta (ejemplo):
+```json
+Content-Type: application/pdf
+
+<binario PDF — guardar con fs.writeFile o mostrar en un iframe>
 ```
 
 ### Agencias y cobertura
@@ -185,6 +222,27 @@ curl "https://api.shalom-api.lat/agencies/search" \
   -H "x-api-key: TU_API_KEY"
 ```
 
+Respuesta (ejemplo):
+```json
+{
+  "success": true,
+  "total": 6,
+  "returned": 6,
+  "data": [
+    {
+      "ter_id": 678,
+      "lugar_over": "CTRA IQUITOS NAUTA",
+      "departamento": "LORETO",
+      "provincia": "MAYNAS",
+      "direccion": "CARRETERA IQUITOS NAUTA, S/N MZ. K - LT. 20, ...",
+      "latitud": "-3.774...",
+      "longitud": "-73.257...",
+      "distancia_km": 1.24
+    }
+  ]
+}
+```
+
 #### `GET /public/agencies`
 
 La misma lista del catálogo sin autenticación, pensada para pruebas y demos. Es la fuente de datos de /agencias en este sitio.
@@ -192,6 +250,17 @@ La misma lista del catálogo sin autenticación, pensada para pruebas y demos. E
 ```bash
 curl "https://api.shalom-api.lat/public/agencies" \
   -H "x-api-key: TU_API_KEY"
+```
+
+Respuesta (ejemplo):
+```json
+{
+  "success": true,
+  "message": "Lista de agencias minimal.",
+  "total": 552,
+  "query": null,
+  "data": [ { "ter_id": 3, "lugar_over": "CHACHAPOYAS CO DOS DE MAYO", "..." : "..." } ]
+}
 ```
 
 ### Crear envíos en Shalom Pro
@@ -220,6 +289,16 @@ Request (JSON):
 }
 ```
 
+Respuesta (ejemplo):
+```json
+{
+  "success": true,
+  "instanceId": "9f8e7d6c-5a4b-3c2d-1e0f-9a8b7c6d5e4f",
+  "apiKey": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "name": "Tienda Demo"
+}
+```
+
 #### `POST /instances/login` *(Shalom Pro)*
 
 Fuerza el login en pro.shalom.pe y guarda la sesión. No es necesario si guardaste credenciales: la plataforma auto-recupera la sesión cuando expira.
@@ -241,6 +320,15 @@ Request (JSON):
   "instanceId": "uuid-de-la-instancia",
   "username": "usuario@mitienda.pe",
   "password": "••••••••"
+}
+```
+
+Respuesta (ejemplo):
+```json
+{
+  "isLoggedIn": true,
+  "username": "usuario@mitienda.pe",
+  "url": "https://pro.shalom.pe"
 }
 ```
 
@@ -282,6 +370,17 @@ Request (JSON):
 }
 ```
 
+Respuesta (ejemplo):
+```json
+{
+  "success": true,
+  "orderNumber": "66479331",
+  "orderCode": "3KTH",
+  "costo": "18.50",
+  "aereo": false
+}
+```
+
 #### `POST /account/register-bulk` *(Shalom Pro)*
 
 Registra una lista de envíos en una sola petición con auto-resolución de agencias, DNI/RENIEC, tarifa y costo. Pensado para sincronizar todas las órdenes pagadas del día.
@@ -310,6 +409,27 @@ Request (JSON):
 }
 ```
 
+Respuesta (ejemplo):
+```json
+{
+  "results": [
+    {
+      "index": 0,
+      "orderNumber": "66479333",
+      "orderCode": "4LMN",
+      "costo": "15.00"
+    },
+    {
+      "index": 1,
+      "orderNumber": "66479334",
+      "orderCode": "5OPQ",
+      "costo": "21.50"
+    }
+  ],
+  "total": 2
+}
+```
+
 #### `POST /account/pending-shipments` *(Shalom Pro)*
 
 Devuelve la lista de envíos pendientes de la cuenta conectada, espejo de la vista de pendientes de Shalom Pro.
@@ -327,6 +447,22 @@ Request (JSON):
 ```json
 {
   "instanceId": "uuid-de-la-instancia"
+}
+```
+
+Respuesta (ejemplo):
+```json
+{
+  "pendientes": [
+    {
+      "orderNumber": "66479331",
+      "orderCode": "3KTH",
+      "destinatario": "María Quispe",
+      "destino": "Tingo María",
+      "estado": "REGISTRADO"
+    }
+  ],
+  "total": 1
 }
 ```
 
@@ -356,6 +492,17 @@ Request (JSON):
 }
 ```
 
+Respuesta (ejemplo):
+```json
+{
+  "success": true,
+  "origin": 7,
+  "destination": 582,
+  "tarifa": "18.50",
+  "moneda": "S/"
+}
+```
+
 #### `GET /account/dni/{dni}`
 
 Valida un DNI de 8 dígitos contra RENIEC y devuelve nombres y apellidos. Úsalo para autocompletar el destinatario en tu checkout.
@@ -365,6 +512,15 @@ Valida un DNI de 8 dígitos contra RENIEC y devuelve nombres y apellidos. Úsalo
 ```bash
 curl "https://api.shalom-api.lat/account/dni/44273815" \
   -H "x-api-key: TU_API_KEY"
+```
+
+Respuesta (ejemplo):
+```json
+{
+  "dni": "44273815",
+  "nombres": "MARIA",
+  "apellidos": "QUISPE LOPEZ"
+}
 ```
 
 ### Webhooks de tracking
@@ -419,6 +575,16 @@ Request (JSON):
 }
 ```
 
+Respuesta (ejemplo):
+```json
+{
+  "subscribed": true,
+  "orderNumber": "66479331",
+  "orderCode": "3KTH",
+  "lastStatus": null
+}
+```
+
 #### `GET /tracking/subscriptions`
 
 Devuelve las guías suscritas por tu usuario con su último estado conocido.
@@ -426,6 +592,20 @@ Devuelve las guías suscritas por tu usuario con su último estado conocido.
 ```bash
 curl "https://api.shalom-api.lat/tracking/subscriptions" \
   -H "x-api-key: TU_API_KEY"
+```
+
+Respuesta (ejemplo):
+```json
+{
+  "subscriptions": [
+    {
+      "orderNumber": "66479331",
+      "orderCode": "3KTH",
+      "lastStatus": "IN_TRANSIT",
+      "active": true
+    }
+  ]
+}
 ```
 
 #### `DELETE /tracking/subscriptions`
@@ -438,6 +618,15 @@ Deja de seguir una guía: acepta query params orderNumber y orderCode.
 ```bash
 curl "https://api.shalom-api.lat/tracking/subscriptions" \
   -H "x-api-key: TU_API_KEY"
+```
+
+Respuesta (ejemplo):
+```json
+{
+  "deleted": true,
+  "orderNumber": "66479331",
+  "orderCode": "3KTH"
+}
 ```
 
 ## Recetas
