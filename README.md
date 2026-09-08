@@ -1,6 +1,6 @@
 # shalom-api-skill
 
-[![skills.sh](https://skills.sh/b/TU-USUARIO/shalom-api-skill)](https://skills.sh/TU-USUARIO/shalom-api-skill)
+[![skills.sh](https://skills.sh/b/ronnaldrangel/shalom-api-skill)](https://skills.sh/ronnaldrangel/shalom-api-skill)
 
 Skill de IA (formato `SKILL.md`, estándar de Agent Skills) que enseña a cualquier agente — Claude Code, Cursor, Codex, OpenCode, VS Code — a integrar **Shalom API Perú**: rastrear envíos, buscar agencias con coordenadas, cotizar tarifas, validar DNI, crear guías en Shalom Pro y verificar webhooks firmados.
 
@@ -9,7 +9,7 @@ Skill de IA (formato `SKILL.md`, estándar de Agent Skills) que enseña a cualqu
 ## Instalación
 
 ```bash
-npx skills add TU-USUARIO/shalom-api-skill
+npx skills add ronnaldrangel/shalom-api-skill
 ```
 
 ### Manual (cualquier agente)
@@ -39,17 +39,17 @@ desde `shalom-api/src/lib/skill.ts`.
 
 ```bash
 # Publicar (primera vez) — desde esta carpeta
-gh repo create TU-USUARIO/shalom-api-skill --public --source . --push \
+gh repo create ronnaldrangel/shalom-api-skill --public --source . --push \
   --description "AI skill: integra Shalom Perú por API — tracking, agencias, guías Shalom Pro, webhooks"
 
 # Sembrar el listado en skills.sh (primer install = indexación)
-npx skills add TU-USUARIO/shalom-api-skill --agent claude-code -y
+npx skills add ronnaldrangel/shalom-api-skill --agent claude-code -y
 
 # Verificar el listado (visible ~30-60 s después)
-# https://skills.sh/TU-USUARIO/shalom-api-skill
+# https://skills.sh/ronnaldrangel/shalom-api-skill
 ```
 
-> Reemplaza `TU-USUARIO` por tu usuario de GitHub en el badge y los comandos
+> Reemplaza `ronnaldrangel` por tu usuario de GitHub en el badge y los comandos
 > una vez creado el repo.
 
 ## Fuentes
