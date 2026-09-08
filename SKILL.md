@@ -814,7 +814,7 @@ Respuesta (ejemplo):
   "message": "Webhook configurado.",
   "webhook": {
     "url": "https://tu-servidor.com/webhooks/shalom",
-    "secret": "whsec_9f2b7c4d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f",
+    "secret": "whsec_...",
     "enabled": true
   }
 }
@@ -837,7 +837,7 @@ Respuesta (ejemplo):
   "webhook": {
     "url": "https://tu-servidor.com/webhooks/shalom",
     "enabled": true,
-    "secretPreview": "whsec_9f2b7c4d…e0f"
+    "secretPreview": "whsec_9f2b7c…"
   }
 }
 ```
