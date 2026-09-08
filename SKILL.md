@@ -1037,6 +1037,8 @@ Todos los errores devuelven JSON `{ "error": "mensaje" }`:
 
 - Índice de documentación: https://shalom-api.lat/docs
 - Guías de integración: https://shalom-api.lat/integraciones/n8n · /woocommerce · /shopify
+- Instalar el nodo de n8n: https://shalom-api.lat/docs/instalar-n8n
+- Instalar esta skill en otro agente: https://shalom-api.lat/docs/instalar-skill
 - Directorio de agencias: https://shalom-api.lat/agencias
 - Texto plano para LLMs: https://shalom-api.lat/llms.txt y https://shalom-api.lat/llms-full.txt
 
