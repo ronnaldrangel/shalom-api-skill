@@ -31,7 +31,7 @@ Rate limit global: 1000 peticiones por minuto. Al superarlo la API responde `429
 Confirma que la key es válida y devuelve el límite mensual de tu plan y el consumo acumulado del mes. Úsala como health check de tu integración antes de operar.
 
 ```bash
-curl "https://api.shalom-api.lat/validate" \
+curl -X GET "https://api.shalom-api.lat/validate" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -57,7 +57,7 @@ Devuelve el resultado de búsqueda y los estados de la guía (espejo del sistema
 - `orderCode` (requerido): Código de seguridad (string de 4 caracteres).
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/track?orderNumber=66479331&orderCode=3KTH" \
+curl -X POST "https://api.shalom-api.lat/track" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -89,7 +89,7 @@ Rastrea múltiples guías con control de flujo y concurrencia. Límite máximo d
 - `orders` (requerido): Array de objetos { orderNumber, orderCode }, máximo 50 items.
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/track/batch?orders={orders}" \
+curl -X POST "https://api.shalom-api.lat/track/batch" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -127,7 +127,7 @@ Genera y descarga el comprobante del envío en formato imagen (por defecto) o PD
 - `format`: Formato de descarga: image (default) | pdf.
 
 ```bash
-curl "https://api.shalom-api.lat/track/voucher?orderNumber=66479331&orderCode=3KTH&format=pdf" \
+curl -X GET "https://api.shalom-api.lat/track/voucher?orderNumber=66479331&orderCode=3KTH&format=pdf" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -146,7 +146,7 @@ Descarga el PDF de la etiqueta de envío usando el número y código de orden. R
 - `orderCode` (requerido): Código de seguridad (4 caracteres).
 
 ```bash
-curl "https://api.shalom-api.lat/track/label?orderNumber=66479331&orderCode=3KTH" \
+curl -X GET "https://api.shalom-api.lat/track/label?orderNumber=66479331&orderCode=3KTH" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -166,7 +166,7 @@ Listado completo de agencias autorizadas omitiendo rutas aéreas de origen/desti
 - `q`: Texto de búsqueda para filtrar por departamento, provincia o zona.
 
 ```bash
-curl "https://api.shalom-api.lat/agencies?q=lima" \
+curl -X GET "https://api.shalom-api.lat/agencies?q=lima" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -217,7 +217,7 @@ Busca por texto libre, departamento, provincia, disponibilidad aérea, u ordena 
 - `per_page`: Límite de resultados a retornar (1–500, default 100).
 
 ```bash
-curl "https://api.shalom-api.lat/agencies/search?q=lima&departamento=LIMA&provincia=LIMA&aereo=true&near=-12.046,-77.043&radius_km=5&per_page=5" \
+curl -X GET "https://api.shalom-api.lat/agencies/search?q=lima&departamento=LIMA&provincia=LIMA&aereo=true&near=-12.046,-77.043&radius_km=5&per_page=5" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -249,7 +249,7 @@ Listado público de agencias para la landing de demostración. No requiere API k
 - `q`: Texto de búsqueda para filtrar por departamento, provincia o zona.
 
 ```bash
-curl "https://api.shalom-api.lat/public/agencies?q=lima" \
+curl -X GET "https://api.shalom-api.lat/public/agencies?q=lima" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -277,7 +277,7 @@ Búsqueda avanzada pública con los mismos filtros que GET /agencies/search. No 
 - `per_page`: Límite de resultados (1–500, default 100).
 
 ```bash
-curl "https://api.shalom-api.lat/public/agencies/search?q=lima&departamento=LIMA&provincia=LIMA&aereo=true&near=-12.046,-77.043&radius_km=5&per_page=5" \
+curl -X GET "https://api.shalom-api.lat/public/agencies/search?q=lima&departamento=LIMA&provincia=LIMA&aereo=true&near=-12.046,-77.043&radius_km=5&per_page=5" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -298,7 +298,7 @@ Respuesta (ejemplo):
 Obtiene todos los departamentos del Perú con cobertura de Shalom.
 
 ```bash
-curl "https://api.shalom-api.lat/locations/departments" \
+curl -X GET "https://api.shalom-api.lat/locations/departments" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -319,7 +319,7 @@ Obtiene todas las provincias pertenecientes al departamento especificado por su 
 - `{depId}` (requerido): ID del departamento (integer), ej. 15.
 
 ```bash
-curl "https://api.shalom-api.lat/locations/departments/15/provinces?{depId}={{depId}}" \
+curl -X GET "https://api.shalom-api.lat/locations/departments/15/provinces" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -340,7 +340,7 @@ Obtiene todos los distritos pertenecientes a la provincia y departamento especif
 - `{provId}` (requerido): ID de la provincia (integer), ej. 1.
 
 ```bash
-curl "https://api.shalom-api.lat/locations/departments/15/provinces/1/districts?{depId}={{depId}}&{provId}={{provId}}" \
+curl -X GET "https://api.shalom-api.lat/locations/departments/15/provinces/1/districts" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -362,7 +362,7 @@ Crea una nueva instancia para el usuario autenticado con su API Key. No consume 
 - `name`: Nombre descriptivo de la instancia (ej. Sucursal Principal).
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/instances?name={name}" \
+curl -X POST "https://api.shalom-api.lat/instances" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -392,7 +392,7 @@ Respuesta (ejemplo):
 Devuelve todas las instancias pertenecientes al usuario de la API Key proporcionada. No consume cuota.
 
 ```bash
-curl "https://api.shalom-api.lat/instances" \
+curl -X GET "https://api.shalom-api.lat/instances" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -418,7 +418,7 @@ Elimina la instancia y su sesión persistida del sistema. Requiere API key de in
 - `instanceId` (requerido): ID de la instancia (en el body).
 
 ```bash
-curl -X DELETE "https://api.shalom-api.lat/instances?instanceId={instanceId}" \
+curl -X DELETE "https://api.shalom-api.lat/instances" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -448,7 +448,7 @@ Verifica si la instancia está logueada en Shalom Pro. No consume cuota.
 - `instanceId` (requerido): ID de la instancia (en el body).
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/instances/status?instanceId={instanceId}" \
+curl -X POST "https://api.shalom-api.lat/instances/status" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -481,7 +481,7 @@ Realiza el login en pro.shalom.pe con navegador headless (resuelve reCAPTCHA v3)
 - `password` (requerido): Contraseña del usuario.
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/instances/login?instanceId={instanceId}&username={username}&password={password}" \
+curl -X POST "https://api.shalom-api.lat/instances/login" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -516,7 +516,7 @@ Cierra la sesión de Shalom Pro y limpia la sesión persistida (incluye credenci
 - `instanceId` (requerido): ID de la instancia (en el body).
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/instances/logout?instanceId={instanceId}" \
+curl -X POST "https://api.shalom-api.lat/instances/logout" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -561,7 +561,7 @@ Registra un envío individual directamente en la API de Shalom Pro.
 - `costo`: Opcional si se envía content (se calculará automáticamente).
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/account/register?instanceId={instanceId}&origen={origen}&destino={destino}&documento={documento}&name={name}&firstname={firstname}&lastname={lastname}&phone={phone}&content={content}&cantidad={cantidad}&clave={clave}&declaracion_jurada={declaracion_jurada}&aereo=true&costo={costo}" \
+curl -X POST "https://api.shalom-api.lat/account/register" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -614,7 +614,7 @@ Registra envíos masivos en Shalom a partir de una lista de shipments. Requiere 
 - `securityCode`: Clave de seguridad de 4 dígitos.
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/account/register-bulk?instanceId={instanceId}&shipments={shipments}&securityCode={securityCode}" \
+curl -X POST "https://api.shalom-api.lat/account/register-bulk" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -679,7 +679,7 @@ Obtiene el espejo (mirror) de la respuesta de Shalom para los envíos que están
 - `instanceId` (requerido): ID de la instancia (en el body).
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/account/pending-shipments?instanceId={instanceId}" \
+curl -X POST "https://api.shalom-api.lat/account/pending-shipments" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -708,7 +708,7 @@ Obtiene el espejo (mirror) de la respuesta de Shalom para los datos del usuario 
 - `instanceId` (requerido): ID de la instancia (en el body).
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/account/get-user?instanceId={instanceId}" \
+curl -X POST "https://api.shalom-api.lat/account/get-user" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -740,7 +740,7 @@ Calcula el costo de un envío basado en origen y destino (ID o nombre del termin
 - `destination` (requerido): ID o nombre del terminal de destino (number | string), ej. 582.
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/account/quote?origin={origin}&destination={destination}" \
+curl -X POST "https://api.shalom-api.lat/account/quote" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -771,7 +771,7 @@ Obtiene información de una persona por su número de DNI (espejo RENIEC).
 - `{dni}` (requerido): Número de DNI (string de 8 dígitos), ej. 12345678.
 
 ```bash
-curl "https://api.shalom-api.lat/account/dni/44273815?{dni}={{dni}}" \
+curl -X GET "https://api.shalom-api.lat/account/dni/44273815" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -792,7 +792,7 @@ Registra la URL de webhook de la cuenta y genera un secreto de firma. El secreto
 - `rotateSecret`: Regenerar el secreto de firma (boolean, default false).
 
 ```bash
-curl -X PUT "https://api.shalom-api.lat/webhooks?url={url}&rotateSecret={rotateSecret}" \
+curl -X PUT "https://api.shalom-api.lat/webhooks" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -825,7 +825,7 @@ Respuesta (ejemplo):
 Devuelve la configuración de webhook de la cuenta (secreto enmascarado).
 
 ```bash
-curl "https://api.shalom-api.lat/webhooks" \
+curl -X GET "https://api.shalom-api.lat/webhooks" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -847,7 +847,7 @@ Respuesta (ejemplo):
 Elimina la configuración de webhook de la cuenta.
 
 ```bash
-curl "https://api.shalom-api.lat/webhooks" \
+curl -X DELETE "https://api.shalom-api.lat/webhooks" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -867,7 +867,7 @@ Suscribe la cuenta a los cambios de estado de un envío. Registra el envío en e
 - `orderCode` (requerido): Código de seguridad (4 caracteres).
 
 ```bash
-curl -X POST "https://api.shalom-api.lat/tracking/subscriptions?orderNumber=66479331&orderCode=3KTH" \
+curl -X POST "https://api.shalom-api.lat/tracking/subscriptions" \
   -H "x-api-key: TU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -905,7 +905,7 @@ Respuesta (ejemplo):
 Lista las suscripciones de tracking de la cuenta.
 
 ```bash
-curl "https://api.shalom-api.lat/tracking/subscriptions" \
+curl -X GET "https://api.shalom-api.lat/tracking/subscriptions" \
   -H "x-api-key: TU_API_KEY"
 ```
 
@@ -935,7 +935,7 @@ Cancela la suscripción de la cuenta a un envío.
 - `orderCode` (requerido): Código de seguridad (4 caracteres, querystring).
 
 ```bash
-curl "https://api.shalom-api.lat/tracking/subscriptions?orderNumber=66479331&orderCode=3KTH" \
+curl -X DELETE "https://api.shalom-api.lat/tracking/subscriptions?orderNumber=66479331&orderCode=3KTH" \
   -H "x-api-key: TU_API_KEY"
 ```
 
