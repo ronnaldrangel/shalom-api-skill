@@ -1010,6 +1010,28 @@ function verifySignature(rawBody, header, secret) {
 
 Registra la URL con `PUT /webhooks` (el secreto `whsec_` se muestra completo una sola vez) y suscribe guías con `POST /tracking/subscriptions`.
 
+### 6. Gestionar una guía ya creada (autogestiones)
+
+Cuando la guía ya existe todavía se puede cambiar la clave de recojo, agregar un contacto, mover el destino, devolver la mercadería, retener o liberar la carga y pedir reparto a domicilio. Aplica a guías que siguen en los envíos pendientes y, salvo agregar contacto, Shalom exige que la guía ya esté en la agencia destino.
+
+El cambio de clave va en un paso. El resto usa un challenge de 10 minutos: pides el código, lo recibes por SMS o email y confirmas con él (el código es alfanumérico, ej. `M9M7NT`).
+
+```bash
+curl -X POST "https://api.shalom-api.lat/shipments/pickup-code" \
+  -H "x-api-key: TU_API_KEY" -H "Content-Type: application/json" \
+  -d '{"instanceId":"UUID","guia":"77175223","clave":"2008"}'
+
+curl -X POST "https://api.shalom-api.lat/shipments/self-management" \
+  -H "x-api-key: TU_API_KEY" -H "Content-Type: application/json" \
+  -d '{"instanceId":"UUID","guia":"77175223","tipo":"cambio_destino","telefono":"987654321","destino":582,"destinatario":"03891771"}'
+
+curl -X POST "https://api.shalom-api.lat/shipments/self-management/confirm" \
+  -H "x-api-key: TU_API_KEY" -H "Content-Type: application/json" \
+  -d '{"instanceId":"UUID","challengeId":"...","clave":"M9M7NT"}'
+```
+
+Tipos disponibles: `cambiar_contacto`, `cambio_destino`, `devolucion_mercaderia`, `retencion_entrega`, `liberacion_carga` y `reparto_domicilio`. El campo `destinatario` es obligatorio en agregar contacto y, en destino y devolución, se toma del envío pendiente o hay que enviarlo. Con `canal: "email"` el código llega por correo. El historial se consulta con `GET /shipments/self-management`.
+
 ## Manejo de errores
 
 Todos los errores devuelven JSON `{ "error": "mensaje" }`:
