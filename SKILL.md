@@ -120,23 +120,25 @@ Respuesta (ejemplo):
 
 #### `GET /track/voucher`
 
-Genera y descarga el comprobante del envío en formato imagen (por defecto) o PDF.
+Descarga el ticket oficial de Shalom en PDF (ya no se genera localmente). Requiere una instancia conectada.
 
-- `orderNumber` (requerido): Número de guía (8 dígitos).
-- `orderCode` (requerido): Código de seguridad (4 caracteres).
-- `format`: Formato de descarga: image (default) | pdf.
+- `instanceId` (requerido): ID de la instancia con sesión de Shalom Pro.
+- `ose_id` (recomendado): ID de la orden; funciona también con guías recién creadas.
+- `orderNumber` + `orderCode`: alternativa a `ose_id`.
 
 ```bash
-curl -X GET "https://api.shalom-api.lat/track/voucher?orderNumber=66479331&orderCode=3KTH&format=pdf" \
-  -H "x-api-key: TU_API_KEY"
+curl -X GET "https://api.shalom-api.lat/track/voucher?instanceId=UUID&orderNumber=66479331&orderCode=3KTH" \
+  -H "x-api-key: TU_API_KEY" --output ticket.pdf
 ```
 
 Respuesta (ejemplo):
 ```json
-Content-Type: image/png
+Content-Type: application/pdf
 
-<binario — imagen o PDF del comprobante>
+<binario — PDF del ticket oficial>
 ```
+
+El ticket oficial solo existe en PDF: `format=image` responde 400.
 
 #### `GET /track/label`
 
