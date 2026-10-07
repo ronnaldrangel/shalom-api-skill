@@ -120,15 +120,20 @@ Respuesta (ejemplo):
 
 #### `GET /track/voucher`
 
-Descarga el ticket oficial de Shalom en PDF (ya no se genera localmente). Requiere una instancia conectada.
+Descarga el ticket oficial de Shalom en PDF o como imagen (ya no se genera ningún ticket local). Requiere una instancia conectada.
 
 - `instanceId` (requerido): ID de la instancia con sesión de Shalom Pro.
 - `ose_id` (recomendado): ID de la orden; funciona también con guías recién creadas.
 - `orderNumber` + `orderCode`: alternativa a `ose_id`.
+- `format` (opcional): `pdf` (default, ticket oficial) o `image` / `jpg` / `jpeg` / `png` para una imagen del mismo ticket oficial, rasterizada del PDF (útil para WhatsApp).
 
 ```bash
 curl -X GET "https://api.shalom-api.lat/track/voucher?instanceId=UUID&orderNumber=66479331&orderCode=3KTH" \
   -H "x-api-key: TU_API_KEY" --output ticket.pdf
+
+# Imagen para WhatsApp (JPEG del ticket oficial)
+curl -X GET "https://api.shalom-api.lat/track/voucher?instanceId=UUID&orderNumber=66479331&orderCode=3KTH&format=image" \
+  -H "x-api-key: TU_API_KEY" --output ticket.jpg
 ```
 
 Respuesta (ejemplo):
@@ -138,7 +143,7 @@ Content-Type: application/pdf
 <binario — PDF del ticket oficial>
 ```
 
-El ticket oficial solo existe en PDF: `format=image` responde 400.
+El ticket oficial solo existe en PDF dentro de Shalom: con `format=image` la API rasteriza ese mismo PDF y responde `image/jpeg` (o `image/png`). `instanceId` es obligatorio.
 
 #### `GET /track/label`
 
@@ -1021,7 +1026,7 @@ El cambio de clave va en un paso. El resto usa un challenge de 10 minutos: pides
 ```bash
 curl -X POST "https://api.shalom-api.lat/shipments/pickup-code" \
   -H "x-api-key: TU_API_KEY" -H "Content-Type: application/json" \
-  -d '{"instanceId":"UUID","guia":"77175223","clave":"2008"}'
+  -d '{"instanceId":"UUID","guia":"77175223","codigo":"9MPJ","clave":"2008"}'
 
 curl -X POST "https://api.shalom-api.lat/shipments/self-management" \
   -H "x-api-key: TU_API_KEY" -H "Content-Type: application/json" \
