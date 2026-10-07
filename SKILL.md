@@ -1014,7 +1014,7 @@ Registra la URL con `PUT /webhooks` (el secreto `whsec_` se muestra completo una
 
 ### 6. Gestionar una guía ya creada (autogestiones)
 
-Cuando la guía ya existe todavía se puede cambiar la clave de recojo, agregar un contacto, mover el destino, devolver la mercadería, retener o liberar la carga y pedir reparto a domicilio. Aplica a guías que siguen en los envíos pendientes y, salvo agregar contacto, Shalom exige que la guía ya esté en la agencia destino.
+Cuando la guía ya existe todavía se puede cambiar la clave de recojo, agregar un contacto, mover el destino, devolver la mercadería, retener o liberar la carga y pedir reparto a domicilio. Con el **código de seguridad** de la guía (`codigo`) la autogestión funciona con la guía en cualquier estado —en ruta, en destino o entregada— y es Shalom quien decide qué se permite según el estado (por ejemplo, cambiar destino de una guía entregada se rechaza con "Tu envío ya ha sido entregado"). Sin el código, solo aplica a envíos pendientes.
 
 El cambio de clave va en un paso. El resto usa un challenge de 10 minutos: pides el código, lo recibes por SMS o email y confirmas con él (el código es alfanumérico, ej. `M9M7NT`).
 
@@ -1025,7 +1025,7 @@ curl -X POST "https://api.shalom-api.lat/shipments/pickup-code" \
 
 curl -X POST "https://api.shalom-api.lat/shipments/self-management" \
   -H "x-api-key: TU_API_KEY" -H "Content-Type: application/json" \
-  -d '{"instanceId":"UUID","guia":"77175223","tipo":"cambio_destino","telefono":"987654321","destino":582,"destinatario":"03891771"}'
+  -d '{"instanceId":"UUID","guia":"77175223","codigo":"9MPJ","tipo":"cambio_destino","telefono":"987654321","destino":582,"destinatario":"03891771"}'
 
 curl -X POST "https://api.shalom-api.lat/shipments/self-management/confirm" \
   -H "x-api-key: TU_API_KEY" -H "Content-Type: application/json" \
