@@ -901,6 +901,7 @@ Respuesta (ejemplo):
     "orderNumber": "66479331",
     "orderCode": "3KTH",
     "lastStatus": null,
+    "lastMirrorStatus": null,
     "active": true,
     "createdAt": "2026-09-08T12:00:00.000Z"
   }
@@ -927,6 +928,7 @@ Respuesta (ejemplo):
       "orderNumber": "66479331",
       "orderCode": "3KTH",
       "lastStatus": "IN_TRANSIT",
+      "lastMirrorStatus": "En tránsito",
       "active": true,
       "createdAt": "2026-09-08T12:00:00.000Z"
     }
@@ -1016,6 +1018,8 @@ function verifySignature(rawBody, header, secret) {
 ```
 
 Registra la URL con `PUT /webhooks` (el secreto `whsec_` se muestra completo una sola vez) y suscribe guías con `POST /tracking/subscriptions`.
+
+Cada evento `tracking.status_changed` trae el texto del espejo en `status` (`Registrado`, `En origen`, `En tránsito`, `En destino`, `Demora de envíos`, `Entregado`) y su equivalente normalizado en `statusCode` (`UNKNOWN`, `REGISTERED`, `EN_ORIGIN`, `IN_TRANSIT`, `AT_DESTINATION`, `OUT_FOR_DELIVERY`, `DELIVERED`), más `previousStatus`/`previousStatusCode`, `statusAt` (fecha del hito en ISO UTC) y `delayed`/`delayAt` cuando Shalom reporta demora. Usa `statusCode` para decidir flujos: la demora no cambia el hito y Shalom la mantiene incluso después de entregar.
 
 ### 6. Gestionar una guía ya creada (autogestiones)
 
