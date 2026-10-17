@@ -53,7 +53,7 @@ Respuesta (ejemplo):
 
 Devuelve el resultado de búsqueda y los estados de la guía (espejo del sistema de Shalom).
 
-- `orderNumber` (requerido): Número de guía / orden (string de 8 dígitos, patrón ^[0-9]+$).
+- `orderNumber` (requerido): Número de guía / orden (string de 8 a 12 dígitos, patrón ^[0-9]+$). Las guías nuevas de Shalom tienen 9 dígitos.
 - `orderCode` (requerido): Código de seguridad (string de 4 caracteres).
 
 ```bash
@@ -149,7 +149,7 @@ El ticket oficial solo existe en PDF dentro de Shalom: con `format=image` la API
 
 Descarga el PDF de la etiqueta de envío usando el número y código de orden. Retorna PDF.
 
-- `orderNumber` (requerido): Número de guía (8 dígitos).
+- `orderNumber` (requerido): Número de guía (8 a 12 dígitos).
 - `orderCode` (requerido): Código de seguridad (4 caracteres).
 
 ```bash
@@ -870,7 +870,7 @@ Respuesta (ejemplo):
 
 Suscribe la cuenta a los cambios de estado de un envío. Registra el envío en el sistema de tracking en background y notifica vía webhook cuando cambie de estado.
 
-- `orderNumber` (requerido): Número de guía (8 dígitos, patrón ^[0-9]+$).
+- `orderNumber` (requerido): Número de guía (8 a 12 dígitos, patrón ^[0-9]+$).
 - `orderCode` (requerido): Código de seguridad (4 caracteres).
 
 ```bash
@@ -940,7 +940,7 @@ Respuesta (ejemplo):
 
 Cancela la suscripción de la cuenta a un envío.
 
-- `orderNumber` (requerido): Número de guía (8 dígitos, querystring).
+- `orderNumber` (requerido): Número de guía (8 a 12 dígitos, querystring).
 - `orderCode` (requerido): Código de seguridad (4 caracteres, querystring).
 
 ```bash
@@ -960,7 +960,7 @@ Respuesta (ejemplo):
 
 ### 1. Rastrear una guía
 
-`orderNumber` son 8 dígitos y `orderCode` 4 caracteres alfanuméricos.
+`orderNumber` tiene entre 8 y 12 dígitos (hoy las guías nuevas tienen 9) y `orderCode` 4 caracteres alfanuméricos.
 
 ```bash
 curl -X POST "https://api.shalom-api.lat/track" -H "x-api-key: TU_API_KEY" -H "Content-Type: application/json" -d '{"orderNumber":"66479331","orderCode":"3KTH"}'
@@ -1060,7 +1060,7 @@ Todos los errores devuelven JSON `{ "error": "mensaje" }`:
 
 - Valida la API key con `GET /validate` antes de la primera operación del flujo.
 - Usa SOLO los endpoints listados en esta guía; no inventes rutas.
-- `orderNumber`: 8 dígitos. `orderCode`: 4 caracteres. DNI: 8 dígitos. Lote de tracking: máximo 50 guías.
+- `orderNumber`: 8 a 12 dígitos. `orderCode`: 4 caracteres. DNI: 8 dígitos. Lote de tracking: máximo 50 guías.
 - Cachea el catálogo de agencias hasta 24 h; se actualiza a diario en el origen.
 - Para seguimiento continuo usa webhooks (`PUT /webhooks` + `POST /tracking/subscriptions`), no polling.
 - Las operaciones marcadas *(Shalom Pro)* requieren `instanceId` y credenciales del usuario final.
