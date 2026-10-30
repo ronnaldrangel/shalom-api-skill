@@ -679,6 +679,28 @@ Respuesta (ejemplo):
 }
 ```
 
+#### `GET /account/products`
+
+Catálogo de productos que acepta el campo `content` al registrar un envío (con el `productId` interno de Shalom y las medidas de cada caja) y la lista completa de contenidos permitidos. No requiere `instanceId` ni consume cuota.
+
+```bash
+curl -X GET "https://api.shalom-api.lat/account/products" \
+  -H "x-api-key: TU_API_KEY"
+```
+
+Respuesta (ejemplo):
+```json
+{
+  "success": true,
+  "total": 6,
+  "data": [
+    { "content": "SOBRE", "productId": 3, "name": "Sobre", "detail": "Documentos simples en sobre manila / Tamaño A4" },
+    { "content": "PAQUETE XS", "productId": 1090, "name": "Caja Paquete XS", "detail": "15 x 20 x 12" }
+  ],
+  "allowedContents": ["SOBRE", "PAQUETE XXS", "PAQUETE XS", "PAQUETE S", "PAQUETE M", "PAQUETE L", "CAJA", "BULTO"]
+}
+```
+
 #### `POST /account/pending-shipments` *(Shalom Pro)*
 
 Obtiene el espejo (mirror) de la respuesta de Shalom para los envíos que están en estado PENDIENTE.
@@ -707,6 +729,35 @@ Respuesta (ejemplo):
   "...": "espejo de la vista de envíos pendientes de Shalom Pro"
 }
 ```
+
+#### `DELETE /account/pending-shipments` *(Shalom Pro)*
+
+Anula un envío que todavía está pendiente en la cuenta Shalom Pro. Usa el mismo endpoint del panel (`/delete-preguia` o `/delete-guia` según el `ose_id`). Consume 1 operación y no se puede deshacer.
+
+- `instanceId` (requerido): ID de la instancia (en el body).
+- `guia` u `ose_id` (uno de los dos): identifica el envío pendiente.
+
+```bash
+curl -X DELETE "https://api.shalom-api.lat/account/pending-shipments" \
+  -H "x-api-key: TU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "instanceId": "2e656a02-7e37-4573-9d68-e76740d337dc",
+  "guia": "100007970"
+}'
+```
+
+Respuesta (ejemplo):
+```json
+{
+  "success": true,
+  "message": "Envío pendiente eliminado",
+  "guia": "100007970",
+  "ose_id": 103479872
+}
+```
+
+Errores: `404` si la guía no está en tus envíos pendientes, `409` si Shalom rechaza la anulación (con su mensaje).
 
 #### `POST /account/get-user` *(Shalom Pro)*
 
@@ -1001,6 +1052,8 @@ curl -X POST "https://api.shalom-api.lat/account/register" -H "x-api-key: TU_API
 ```
 
 Campos requeridos: instanceId, origen (int), destino (int o string con prefijo "0" para aéreo), documento, name, firstname, lastname, phone. `content` automatiza tipo y costo. Para lote usa `POST /account/register-bulk` con `shipments[]` (required: recipientDoc, recipientPhone, origin, destination, content).
+
+El catálogo de productos (`content`, `productId`, medidas) está en `GET /account/products`; no consume cuota. Para anular un envío que sigue pendiente usa `DELETE /account/pending-shipments` con `instanceId` y `guia` u `ose_id` (404 si no está en pendientes, 409 si Shalom lo rechaza).
 
 ### 5. Verificar la firma de un webhook
 Los webhooks llegan con header `X-Shalom-Signature: t=<unix>,v1=<hex>` donde `v1 = HMAC-SHA256("<t>.<rawBody>", whsec_...)`. Verifica en tu endpoint antes de procesar:
