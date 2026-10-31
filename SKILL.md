@@ -566,6 +566,10 @@ Registra un envío individual directamente en la API de Shalom Pro.
 - `declaracion_jurada`: enum: '' | 'Artículos de uso personal' | 'Documentos' | 'Ropa' | 'Electrodomésticos' — acepción para envío aéreo.
 - `aereo`: enum: 0 | 1 — se autodetecta si destino empieza con 0.
 - `costo`: Opcional si se envía content (se calculará automáticamente).
+- `deseo_garantia`: boolean — activa la garantía (seguro de mercancía).
+- `garantia_monto`: valor declarado a asegurar (máx. 40,000). Obligatorio si `deseo_garantia = true`; el costo se calcula automáticamente (0.5% o S/ 5 fijo según producto).
+- `cobro_seguro`: boolean — activa el cobro seguro (cobro contra entrega; requiere autorización de cobranza aprobada en Shalom).
+- `monto_cobro_seguro`: monto a cobrar al destinatario. Obligatorio si `cobro_seguro = true`.
 
 ```bash
 curl -X POST "https://api.shalom-api.lat/account/register" \
@@ -619,6 +623,8 @@ Registra envíos masivos en Shalom a partir de una lista de shipments. Requiere 
 - `instanceId` (requerido): ID de la instancia.
 - `shipments` (requerido): Lista de envíos (mínimo 1). Cada item requiere: recipientDoc, recipientPhone, origin, destination, content.
 - `securityCode`: Clave de seguridad de 4 dígitos.
+
+Cada ítem acepta además, opcionalmente: `deseo_garantia` + `garantia_monto` (valor declarado, máx. 40,000) y `cobro_seguro` + `monto_cobro_seguro` (monto a cobrar), con la misma lógica que el registro individual.
 
 ```bash
 curl -X POST "https://api.shalom-api.lat/account/register-bulk" \
@@ -1052,6 +1058,8 @@ curl -X POST "https://api.shalom-api.lat/account/register" -H "x-api-key: TU_API
 ```
 
 Campos requeridos: instanceId, origen (int), destino (int o string con prefijo "0" para aéreo), documento, name, firstname, lastname, phone. `content` automatiza tipo y costo. Para lote usa `POST /account/register-bulk` con `shipments[]` (required: recipientDoc, recipientPhone, origin, destination, content).
+
+Garantía y cobro seguro (opcionales, en `/account/register` o en cada ítem del lote): `deseo_garantia: true` + `garantia_monto` (valor declarado, máx. 40,000; el costo 0.5% o S/ 5 fijo lo calcula la API) y `cobro_seguro: true` + `monto_cobro_seguro` (monto a cobrar al destinatario; requiere cobranza aprobada en Shalom).
 
 El catálogo de productos (`content`, `productId`, medidas) está en `GET /account/products`; no consume cuota. Para anular un envío que sigue pendiente usa `DELETE /account/pending-shipments` con `instanceId` y `guia` u `ose_id` (404 si no está en pendientes, 409 si Shalom lo rechaza).
 
