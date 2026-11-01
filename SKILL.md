@@ -560,7 +560,7 @@ Registra un envío individual directamente en la API de Shalom Pro.
 - `firstname` (requerido): Primer apellido del destinatario.
 - `lastname` (requerido): Segundo apellido del destinatario.
 - `phone` (requerido): Teléfono del destinatario (integer).
-- `content`: Nombre del producto (ej: SOBRE, PAQUETE XS). Automatiza tipo y costo.
+- `content`: Nombre del producto (SOBRE, PAQUETE XXS/XS/S/M/L u OTRA MEDIDA). Automatiza tipo y costo; para OTRA MEDIDA envía además peso, alto, largo y ancho.
 - `cantidad`: Cantidad de bultos (integer).
 - `clave`: Clave de recojo del envío.
 - `declaracion_jurada`: enum: '' | 'Artículos de uso personal' | 'Documentos' | 'Ropa' | 'Electrodomésticos' — acepción para envío aéreo.
@@ -624,7 +624,7 @@ Registra envíos masivos en Shalom a partir de una lista de shipments. Requiere 
 - `shipments` (requerido): Lista de envíos (mínimo 1). Cada item requiere: recipientDoc, recipientPhone, origin, destination, content.
 - `securityCode`: Clave de seguridad de 4 dígitos.
 
-Cada ítem acepta además, opcionalmente: `deseo_garantia` + `garantia_monto` (valor declarado, máx. 40,000) y `cobro_seguro` + `monto_cobro_seguro` (monto a cobrar), con la misma lógica que el registro individual.
+Cada ítem acepta además, opcionalmente: `deseo_garantia` + `garantia_monto` (valor declarado, máx. 40,000) y `cobro_seguro` + `monto_cobro_seguro` (monto a cobrar), con la misma lógica que el registro individual. Con `content: "OTRA MEDIDA"` son obligatorios `height`, `width`, `length` y `weight` (máx. 1.5 m por lado y 10 kg).
 
 ```bash
 curl -X POST "https://api.shalom-api.lat/account/register-bulk" \
@@ -698,14 +698,17 @@ Respuesta (ejemplo):
 ```json
 {
   "success": true,
-  "total": 6,
+  "total": 7,
   "data": [
     { "content": "SOBRE", "productId": 3, "name": "Sobre", "detail": "Documentos simples en sobre manila / Tamaño A4" },
-    { "content": "PAQUETE XS", "productId": 1090, "name": "Caja Paquete XS", "detail": "15 x 20 x 12" }
+    { "content": "PAQUETE XS", "productId": 1090, "name": "Caja Paquete XS", "detail": "15 x 20 x 12" },
+    { "content": "OTRA MEDIDA", "productId": 4, "name": "Otra Medida", "detail": "Medidas personalizadas (ancho x alto x largo)" }
   ],
-  "allowedContents": ["SOBRE", "PAQUETE XXS", "PAQUETE XS", "PAQUETE S", "PAQUETE M", "PAQUETE L", "CAJA", "BULTO"]
+  "allowedContents": ["SOBRE", "PAQUETE XXS", "PAQUETE XS", "PAQUETE S", "PAQUETE M", "PAQUETE L", "CAJA", "BULTO", "OTRA MEDIDA"]
 }
 ```
+
+Para `content: "OTRA MEDIDA"` (productId 4) el registro exige `peso`, `alto`, `largo` y `ancho` (máx. 1.5 m por lado y 10 kg) y el precio se calcula por volumen.
 
 #### `POST /account/pending-shipments` *(Shalom Pro)*
 
