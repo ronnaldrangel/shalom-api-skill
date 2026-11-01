@@ -750,6 +750,40 @@ Respuesta (ejemplo):
 
 Errores: `404` si el documento no está registrado en esa cuenta, `409` si la instancia perdió la sesión de Shalom Pro.
 
+#### `GET /account/tracking-list` *(Shalom Pro)*
+
+Espejo de "Seguimiento de envíos": envíos en tránsito paginados.
+
+- `instanceId` (requerido, querystring)
+- `page` (opcional, default 1)
+
+```bash
+curl "https://api.shalom-api.lat/account/tracking-list?instanceId=UUID&page=1" -H "x-api-key: TU_API_KEY"
+```
+
+Respuesta: `{ success, message, data: { items: [...], meta: { current_page, last_page, per_page, total } } }`.
+
+#### `GET /account/history` *(Shalom Pro)*
+
+Espejo de "Historial de envíos": entregados, paginado y con filtros.
+
+- `instanceId` (requerido), `page` (default 1)
+- `from_date`, `to_date` (`YYYY-MM-DD`), `document_type` (DNI/RUC/CE), `document_number`, `order_number`, `destination`
+
+```bash
+curl "https://api.shalom-api.lat/account/history?instanceId=UUID&page=1&from_date=2026-10-01&to_date=2026-10-31" -H "x-api-key: TU_API_KEY"
+```
+
+#### `GET /account/vouchers` *(Shalom Pro)*
+
+Lista los envíos entregados con su `ose_id` y un enlace listo para el ticket oficial (`/track/voucher`). Acepta los mismos filtros que `/account/history`.
+
+```bash
+curl "https://api.shalom-api.lat/account/vouchers?instanceId=UUID&page=1" -H "x-api-key: TU_API_KEY"
+```
+
+Cada ítem trae `ose_id`, `guia`, `codigo`, `serie`, `fecha`, `producto`, `monto`, `entregado`, `origen`, `destino`, `destinatario`, `ticket_path` y `ticket_url` (agrega `&format=image` al ticket_url para JPEG).
+
 #### `POST /account/pending-shipments` *(Shalom Pro)*
 
 Obtiene el espejo (mirror) de la respuesta de Shalom para los envíos que están en estado PENDIENTE.
