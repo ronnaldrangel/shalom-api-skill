@@ -710,6 +710,46 @@ Respuesta (ejemplo):
 
 Para `content: "OTRA MEDIDA"` (productId 4) el registro exige `peso`, `alto`, `largo` y `ancho` (máx. 1.5 m por lado y 10 kg) y el precio se calcula por volumen.
 
+#### `POST /account/person/search` *(Shalom Pro)*
+
+Resuelve un documento (DNI, RUC o CE) a una persona o empresa **ya registrada** en la cuenta Shalom Pro. Sirve para autocompletar formularios (nombre, apellidos, teléfono, correo y dirección) antes del submit. No consulta RENIEC.
+
+- `instanceId` (requerido): ID de la instancia (en el body).
+- `document` (requerido): DNI (8 dígitos), RUC (11) o CE (6 a 12 dígitos), solo números.
+- `type_document` (opcional): `DNI` | `RUC` | `CE`. Si no se envía se infiere por longitud (8 = DNI, 11 = RUC, otro = CE).
+
+```bash
+curl -X POST "https://api.shalom-api.lat/account/person/search" \
+  -H "x-api-key: TU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "instanceId": "2e656a02-7e37-4573-9d68-e76740d337dc",
+  "document": "12345678"
+}'
+```
+
+Respuesta (ejemplo):
+```json
+{
+  "success": true,
+  "message": "Entidad encontrada",
+  "data": {
+    "type_document": "DNI",
+    "document": "12345678",
+    "name": "JUAN",
+    "lastname": "PEREZ",
+    "surname": "GOMEZ",
+    "full_name": "JUAN PEREZ GOMEZ",
+    "phone": "999999999",
+    "email": "ejemplo@correo.com",
+    "address": "",
+    "id": 123456
+  }
+}
+```
+
+Errores: `404` si el documento no está registrado en esa cuenta, `409` si la instancia perdió la sesión de Shalom Pro.
+
 #### `POST /account/pending-shipments` *(Shalom Pro)*
 
 Obtiene el espejo (mirror) de la respuesta de Shalom para los envíos que están en estado PENDIENTE.
