@@ -798,10 +798,12 @@ Respuesta (ejemplo):
 
 #### `POST /account/quote`
 
-Calcula el costo de un envío basado en origen y destino (ID o nombre del terminal). Respuesta cacheada ~5 minutos.
+Calcula el costo de un envío basado en origen y destino (ID o nombre del terminal). Sin medidas devuelve la tarifa estándar de los productos fijos; con las 4 medidas devuelve además el precio de "Otra Medida" por volumen. Respuesta cacheada ~5 minutos.
 
 - `origin` (requerido): ID o nombre del terminal de origen (number | string), ej. 7.
 - `destination` (requerido): ID o nombre del terminal de destino (number | string), ej. 582.
+- `width`, `height`, `length` (opcionales): medidas en metros (máx. 1.5 m). Para "otra medida" van las 3 junto con el peso.
+- `weight` (opcional): peso en kg (máx. 10 kg para "otra medida").
 
 ```bash
 curl -X POST "https://api.shalom-api.lat/account/quote" \
@@ -809,7 +811,11 @@ curl -X POST "https://api.shalom-api.lat/account/quote" \
   -H "Content-Type: application/json" \
   -d '{
   "origin": 7,
-  "destination": 582
+  "destination": 582,
+  "width": 1.4,
+  "height": 1.4,
+  "length": 1.4,
+  "weight": 9
 }'
 ```
 
@@ -817,16 +823,30 @@ Request (JSON):
 ```json
 {
   "origin": 7,
-  "destination": 582
+  "destination": 582,
+  "width": 1.4,
+  "height": 1.4,
+  "length": 1.4,
+  "weight": 9
 }
 ```
 
 Respuesta (ejemplo):
 ```json
 {
-  "...": "espejo de la tarifa calculada por el sistema de Shalom (tarifa/mostrar)"
+  "success": true,
+  "message": "Calculo realizado",
+  "modo": "personalizado",
+  "data": {
+    "price": 543,
+    "type": "volumen",
+    "message": "Cotización basada en el volumen",
+    "tariff": { "sobre": 8, "cajapaquetexxs": 8, "cajapaquetexs": 10, "cajapaquetes": 12, "cajapaquetem": 16, "cajapaquetel": 20 }
+  }
 }
 ```
+
+No requiere `instanceId`. Sin medidas, `modo` es `estandar` y `data.tariff` trae los precios fijos; con medidas, `data.price` es el precio de "Otra Medida" (type `volumen` cuando excede el rango fijo).
 
 #### `GET /account/dni/{dni}`
 
