@@ -118,6 +118,35 @@ Respuesta (ejemplo):
 ]
 ```
 
+#### `GET /track/by-ose`
+
+Resuelve un `ose_id` (service_order_id) al número de orden y código de seguridad usando el rastreo público. **No requiere instancia.**
+
+- `ose_id` (requerido): ID de la orden.
+- `instanceId` (opcional): si la guía todavía es pendiente, la busca en los envíos pendientes de esa instancia.
+
+```bash
+curl "https://api.shalom-api.lat/track/by-ose?ose_id=123456789" \
+  -H "x-api-key: TU_API_KEY"
+```
+
+```json
+{
+  "success": true,
+  "message": "Guia encontrada.",
+  "source": "tracking",
+  "data": {
+    "ose_id": 123456789,
+    "orderNumber": "12345678",
+    "orderCode": "ABCD",
+    "status": "En destino",
+    "delivered": false
+  }
+}
+```
+
+Con una guía pendiente y `instanceId`, responde `source: "pending"` y `status: "Pendiente"`. `404` si no existe.
+
 #### `GET /track/voucher`
 
 Descarga el ticket oficial de Shalom en PDF o como imagen (ya no se genera ningún ticket local). Requiere una instancia conectada.
