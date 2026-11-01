@@ -140,12 +140,21 @@ curl "https://api.shalom-api.lat/track/by-ose?ose_id=123456789" \
     "orderNumber": "12345678",
     "orderCode": "ABCD",
     "status": "En destino",
-    "delivered": false
+    "delivered": false,
+    "monto": "12.00",
+    "contenido": "1 PAQUETE XS",
+    "tipo_pago": "Contra entrega",
+    "direccion_entrega": "ENTREGAR EN AGENCIA",
+    "remitente": { "nombre": "JUAN PEREZ GOMEZ", "documento": "12345678" },
+    "destinatario": { "nombre": "MARIA LOPEZ DIAZ", "documento": "87654321" },
+    "comprobante": { "tipo": "BV", "serie": "B936", "numero": "0049643", "fecha": "2026-10-02" },
+    "origen": { "id": 7, "nombre": "LIMA" },
+    "destino": { "id": 582, "nombre": "PIURA" }
   }
 }
 ```
 
-Con una guía pendiente y `instanceId`, responde `source: "pending"` y `status: "Pendiente"`. `404` si no existe.
+Incluye remitente, destinatario (nombre y documento), comprobante, pago, dirección de entrega y fechas. Con una guía pendiente y `instanceId`, responde `source: "pending"` y `status: "Pendiente"` (el destinatario puede venir `null` si Shalom aún no lo vincula; se incluye `recipient_id`). `404` si no existe.
 
 #### `GET /track/voucher`
 
