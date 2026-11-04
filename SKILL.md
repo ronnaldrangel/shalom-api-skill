@@ -662,7 +662,7 @@ Registra envíos masivos en Shalom a partir de una lista de shipments. Requiere 
 - `shipments` (requerido): Lista de envíos (mínimo 1). Cada item requiere: recipientDoc, recipientPhone, origin, destination, content.
 - `securityCode`: Clave de seguridad de 4 dígitos.
 
-Cada ítem acepta además, opcionalmente: `deseo_garantia` + `garantia_monto` (valor declarado, máx. 40,000) y `cobro_seguro` + `monto_cobro_seguro` (monto a cobrar), con la misma lógica que el registro individual. Con `content: "OTRA MEDIDA"` son obligatorios `height`, `width`, `length` y `weight` (máx. 1.5 m por lado y 10 kg).
+Cada ítem acepta además, opcionalmente: `deseo_garantia` + `garantia_monto` (valor declarado, máx. 40,000) y `cobro_seguro` + `monto_cobro_seguro` (monto a cobrar), con la misma lógica que el registro individual. Con `content: "OTRA MEDIDA"` son obligatorios `height`, `width`, `length` y `weight` (máx. 1.5 m por lado y 500 kg).
 
 ```bash
 curl -X POST "https://api.shalom-api.lat/account/register-bulk" \
@@ -746,7 +746,7 @@ Respuesta (ejemplo):
 }
 ```
 
-Para `content: "OTRA MEDIDA"` (productId 4) el registro exige `peso`, `alto`, `largo` y `ancho` (máx. 1.5 m por lado y 10 kg) y el precio se calcula por volumen.
+Para `content: "OTRA MEDIDA"` (productId 4) el registro exige `peso`, `alto`, `largo` y `ancho` (máx. 1.5 m por lado y 500 kg) y el precio se calcula por volumen.
 
 #### `POST /account/person/search` *(Shalom Pro)*
 
@@ -918,7 +918,7 @@ Calcula el costo de un envío basado en origen y destino (ID o nombre del termin
 - `origin` (requerido): ID o nombre del terminal de origen (number | string), ej. 7.
 - `destination` (requerido): ID o nombre del terminal de destino (number | string), ej. 582.
 - `width`, `height`, `length` (opcionales): medidas en metros (máx. 1.5 m). Para "otra medida" van las 3 junto con el peso.
-- `weight` (opcional): peso en kg (máx. 10 kg para "otra medida").
+- `weight` (opcional): peso en kg (máx. 500 kg para "otra medida").
 
 ```bash
 curl -X POST "https://api.shalom-api.lat/account/quote" \
